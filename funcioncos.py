@@ -14,6 +14,7 @@ def function(A,w,x):
     return f
 
 plt.plot(x,function(10,1,x))
+plt.plot(x,function(5,1,x),'r')
 plt.show()
     
 
