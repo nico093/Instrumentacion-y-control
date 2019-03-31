@@ -23,10 +23,10 @@ class Osciloscopio(object):
             except:
                 print('El instrumento no respondió cuando se le preguntó el nombre.')
 
-    def getData:
+    def getData():
         self.inst.query_ascii_values('CURVe?')
 
-    def ReadVoltage:
+    def ReadVoltage():
         ymult = self.inst.query_ascii_values('WFMPRE:YMULT?') #Vertical scale factor
         yzero = self.inst.query_ascii_values('WFMPRE:YZERO?') #Offset Voltage
         yoff = self.inst.query_ascii_values('WFMPRE:YOFF?')   #Vertical Offset
