@@ -4,12 +4,15 @@ import numpy as np
 import matplotlib.pyploy as plt
 import time
 import Save as sv
-#Creo el objeto generador de funciones:
 
+
+#Creo el objetos:
 generador = gf.GeneradorFunciones()
 osciloscopio = osc.Osciloscopio()
+
 frec = []
 vpp = []
+
 
 for i in range(10):
     generador.SetFrequency(str(i)) #No se si esto lo va a leer porque no se bien los parametros de la clase.
@@ -18,11 +21,12 @@ for i in range(10):
     time.sleep(1)
 
 
+#Guardo los datos en un txt
 f = save('frecuencia.txt', frec)
 f.open()
-
 v = save.('vpp.txt', vpp)
 v.open()
 
+#Plot
 plt.plot(f,v, 'ro')
 plt.show()
