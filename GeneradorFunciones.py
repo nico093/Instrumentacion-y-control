@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 30 19:16:28 2019
+Created on Tue Apr  9 15:30:09 2019
 
+@author: Publico
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Mar 30 19:16:28 2019
 @author: nicon
 """
 import pyvisa
 import numpy as np
 import time
-
 
 class GeneradorFunciones(object):
 
@@ -31,27 +36,27 @@ class GeneradorFunciones(object):
         self.inst.write("OUTPut{}:STATe OFF".format(channel))
         
     def GetFrequency(self, channel = 1):
-        self.inst.query('SOURce{}:FUNCtion:FREQuency?'.format(channel))
+        return self.inst.query('SOURce{}:FREQuency?'.format(channel))
         
-    def SetFrequency(self, freq, channel = 1):
+    def SetFrequency(self, freq, channel = 1): #gen.SetFrequency('5 kHz') o por default en Hz
         self.inst.write("SOURce{}:FREQuency {}".format(channel,freq))
     
     def GetShape(self, channel = 1):
-        self.inst.query('SOURce{}:FUNCtion:SHAPe?'.format(channel))
+        return self.inst.query('SOURce{}:FUNCtion:SHAPe?'.format(channel))
     
-    def SetShape(self, shape, channel = 1):
-        self.inst.write('SOURce{}:FUNCtion {}'.format(channel, shape))
+    def SetShape(self, shape, channel = 1): #gen.SetShape('SQUare')
+        self.inst.write("SOURce{}:FUNCtion {}".format(channel,shape)) 
     
     def GetVoltage(self, channel = 1):
-        self.inst.query('SOURce{}:VOLTage:LEVel:IMMediate:AMPLitude?'.format(channel))
+        return self.inst.query('SOURce{}:VOLTage:LEVel:IMMediate:AMPLitude?'.format(channel))
     
-    def SetVoltage(self, voltage, channel = 1):
+    def SetVoltage(self, voltage, channel = 1): #gen.SetVoltage(2) Vpp
         self.inst.write('SOURce{}:VOLTage:LEVel:IMMediate:AMPLitude {}'.format(channel, voltage))
         
     def GetOffset(self, channel = 1):
-        self.inst.query('SOURce{}:VOLTage:LEVel:IMMediate:OFFSet?'.format(channel))        
+        return self.inst.query('SOURce{}:VOLTage:LEVel:IMMediate:OFFSet?'.format(channel))        
     
-    def SetOffset(self, offset, channel = 1):
+    def SetOffset(self, offset, channel = 1): #gen.SetOffset(1) V
         self.inst.write('SOURce{}:VOLTage:LEVel:IMMediate:OFFSet {}'.format(channel, offset))        
     
     def GeneralSet(self, freq, voltage, offset = '0 V', shape = 'SIN', channel = 1):
@@ -73,6 +78,3 @@ class GeneradorFunciones(object):
         self.inst.write('SOURce{}:SWEep:TIME {}'.format(channel, sweeptime))    
         self.inst.write('SOURce{}:FREQuency:STARt {}'.format(channel, freqini))
         self.inst.write('SOURce{}:FREQuency:STOP {}'.format(channel, freqfin))
-        pass
-    
-    
