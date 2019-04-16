@@ -8,11 +8,21 @@ Created on Tue Mar 26 18:39:33 2019
 import numpy as np
 import matplotlib.pyplot as plt
 import lantz 
-from lantz import MessageBasedDriver
-
+from lantz import MessageBasedDriver, Feat #feat: decorador
+from lantz.core import mfeats
 
 class Osciloscopio(MessageBasedDriver):
         
+    @Feat(units = 's') #eso debe usar pint para setear las unidades
+    def timebase(self):
+        return self.query('HOR:MAIN:SCA?')
+    
+    @timebase.setter
+    def timebase(self,base):
+        self.write('HOR:MAIN:SCA {}'.format(base))
+    
+    timebase2 = mfeats.QuantityFeat('HOR:MAIN:SCA?', 'HOR:MAIN:SCA {}', units='s', limits=(0.001, 100)) #esto es todo lo anterior en una sola linea
+    
     def data_encdg_ascii(self):
         self.write('DATA:ENCDG ASCII')
         
@@ -79,8 +89,14 @@ class Osciloscopio(MessageBasedDriver):
         self.write('HOR:DEL:SCA {}'.format(seconds))
         
  #%%
+if __name__ == '__main__':
 
-with Osciloscopio.via_usb('C102223') as Osc:
-     Osc.read_time()
+    with Osciloscopio.via_usb('C065092') as Osc:
+        Osc.grafico()
+
+    with Osciloscopio.via_usb('C065092') as Osc:
+        Osc.timebase = 0.01 #setter; lo setea
+        print(Osc.timebase) #este te lo devuelve. esto esta bueno porque te queda timebase como propiedad en vez de tener un setter y un getter
+     #podria ponerlo con pint directamente como osci.timebase = 0.01 * ureg.seconds
     
         

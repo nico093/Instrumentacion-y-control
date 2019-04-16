@@ -8,9 +8,11 @@ Created on Tue Apr  9 15:30:09 2019
 # -*- coding: utf-8 -*-
 """
 Created on Sat Mar 30 19:16:28 2019
-@author: nicon
-"""
+@author: nicon"""
+
+
 import numpy as np
+import matplotlib.pyplot as plt
 import time
 import lantz 
 from lantz import MessageBasedDriver
@@ -19,6 +21,7 @@ from Osciloscopio import Osciloscopio
 
 class GeneradorFunciones(MessageBasedDriver):
 
+    
         
     def TurnOn(self, channel = 1):
         self.write("OUTPut{}:STATe ON".format(channel))
@@ -73,9 +76,28 @@ class GeneradorFunciones(MessageBasedDriver):
 
 #%%
         
+
 with GeneradorFunciones.via_usb('C033248') as Genf:
-    with Osciloscopio.Osciloscopio.via_usb('C102223') as Osc:
-        print(Genf.GetFrequency())
+     with Osciloscopio.via_usb('C065092') as Osc:
+        
+        Frequencies = np.linspace(100, 1000, 5)
+        
+        atotal = []
+        btotal = []
+        for Fr in Frequencies:
+            Genf.SetFrequency(Fr)
+            #time.sleep(2)
+            a = Osc.read_time()
+            b = Osc.read_voltage()
+            #time.sleep(1)
+           #atotal.append(list(a))
+            #btotal.append(list(b))
+            plt.plot(a, b)
+            plt.show()
+           # time.sleep(2)
+            
+        
+        
         
 
 
