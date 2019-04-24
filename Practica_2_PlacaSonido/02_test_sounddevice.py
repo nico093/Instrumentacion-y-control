@@ -13,9 +13,29 @@ import time
 
 fsamp = 44100
 
-def funcion(tau, frequency, Amplitude = 1, fs = 44100): #por default tiene 44100 y no hay que aclararsela
-    myarray = Amplitude*np.sin(np.linspace(0,tau,int(tau*fs))*frequency*(2*np.pi))
-    return myarray
+def GeneradorArray(tau, frequency, Amplitude = 1, fs = 44100): #por default tiene 44100 y no hay que aclararsela
+    if type(frequency) == int: #si el input de frecuencia es un dado valor, hace lo de siempre
+        myarray = Amplitude*np.sin(np.linspace(0,tau,int(tau*fs))*frequency*(2*np.pi))
+        return myarray
+    Tiempos = np.linspace(0, tau, fs)
+    taufraccionado = tau/len(frequency) #fracciona en partes temporales iguales cada frecuencia
+    
+    i = 0
+    myarray = np.linspace(0, 0, 0)
+    Frecuencias = np.linspace(0, 0, 0)
+    LastPoint = 0 #está para que el concatenado de todas las frecuencias sea correcto
+    
+    while i < len(frequency):
+        PartialLinspace = np.linspace(0, taufraccionado, int(taufraccionado*fs))*frequency[i]*(2*np.pi) + LastPoint
+        PartialArray = Amplitude*np.sin(PartialLinspace)
+        PartialFrecuencias = np.linspace(frequency[i], frequency[i], len(PartialArray))
+        myarray = np.concatenate((myarray, PartialArray))
+        Frecuencias = np.concatenate((Frecuencias, PartialFrecuencias))
+        i = i + 1
+        LastPoint = PartialLinspace[-1]
+    
+    return myarray, Frecuencias, Tiempos
+    
 
 #sd.play(funcion(3, fsamp, 440),fsamp)
 
@@ -28,7 +48,7 @@ def funcion(tau, frequency, Amplitude = 1, fs = 44100): #por default tiene 44100
 def barrido():
     frecuencia = np.linspace(200, 600, 10)
     for f in frecuencia:
-        myarray = funcion(1, fsamp, f)
+        myarray = GeneradorArray(1, fsamp, f)
         sd.play(myarray, fsamp)
         time.sleep(1)
         #print(f)
@@ -64,6 +84,24 @@ plt.plot(pasaralista(myrecording))
 #print(len(list(time_total)))
 #print(len(list(pasaralista(myrecording))))
 plt.show()
+
+
+
+#%%
+import matplotlib.pyplot as plt
+array1, Frec, Tiempo = GeneradorArray(1, [5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
+
+plt.plot(Tiempo, array1)
+
+
+
+
+
+
+
+
+
+
 
 
 
