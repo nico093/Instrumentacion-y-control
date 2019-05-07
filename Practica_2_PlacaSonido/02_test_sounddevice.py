@@ -2,7 +2,7 @@
 """
 Created on Tue Apr 23 16:37:36 2019
 
-@author: Publico
+@author: LuMiNi
 """
 
 import sounddevice as sd
@@ -17,7 +17,7 @@ def GeneradorArray(tau, frequency, Amplitude = 1, fs = 44100): #por default tien
     if type(frequency) == int: #si el input de frecuencia es un dado valor, hace lo de siempre
         myarray = Amplitude*np.sin(np.linspace(0,tau,int(tau*fs))*frequency*(2*np.pi))
         return myarray
-    Tiempos = np.linspace(0, tau, fs)
+    Tiempos = np.linspace(0, tau, fs*tau)
     taufraccionado = tau/len(frequency) #fracciona en partes temporales iguales cada frecuencia
     
     i = 0
@@ -36,6 +36,42 @@ def GeneradorArray(tau, frequency, Amplitude = 1, fs = 44100): #por default tien
     
     return myarray, Frecuencias, Tiempos
     
+#Este pedazo de codigo calcula los tiempos que tarda numpy y pythonlists en armar el array.
+#podemos ver que numpy tarda impresionantemente más tiempo (para 5 segundos de sweep tarda 90 segundos casi y python no llega a 1)
+#
+#def GeneradorArraySweepContinuo(tau, freqini, freqf, Amplitude = 1, fs = 44100): #por default tiene 44100 y no hay que aclararsela
+#    frequency = np.linspace(freqini, freqf, fs*tau)
+#    Tiempos = np.linspace(0, tau, fs*tau)
+#    myarraylist = []
+#    myarray = np.linspace(0, 0, 0)
+#    i = 0
+#    ti = time.time()
+#    while i < len(frequency):
+#        myarray = np.append(myarray, Amplitude*np.sin(Tiempos[i]*frequency[i]*2*np.pi))
+#        i = i + 1
+#    tf = time.time()
+#    print('El np array tardó ', tf-ti)
+#    ti = time.time()
+#    i = 0
+#    while i < len(frequency):
+#        myarraylist.append(Amplitude*np.sin(Tiempos[i]*frequency[i]*2*np.pi))
+#        i = i + 1
+#    myarraylist = np.array(myarraylist)
+#    tf = time.time()
+#    print('El append de python tardó ', tf-ti)
+#    return myarray, myarraylist, Tiempos
+
+def GeneradorArraySweepContinuo(tau, freqini, freqf, Amplitude = 1, fs = 44100): #por default tiene 44100 y no hay que aclararsela
+    frequency = np.linspace(freqini, freqf, fs*tau)
+    Tiempos = np.linspace(0, tau, fs*tau)
+    myarraylist = []
+    i = 0
+    while i < len(frequency):
+        myarraylist.append(Amplitude*np.sin(Tiempos[i]*frequency[i]*2*np.pi))
+        i = i + 1
+    myarraylist = np.array(myarraylist)
+    return myarraylist, frequency, Tiempos
+
 
 #sd.play(funcion(3, fsamp, 440),fsamp)
 
@@ -89,13 +125,9 @@ plt.show()
 
 #%%
 import matplotlib.pyplot as plt
-array1, Frec, Tiempo = GeneradorArray(1, [5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
+arraynp, arraypy, Tiempo = GeneradorArraySweepContinuo(4, 100, 1000)
 
-plt.plot(Tiempo, array1)
-
-
-
-
+plt.plot(Tiempo, arraynp + 3, 'b', Tiempo, arraypy, 'r')
 
 
 
