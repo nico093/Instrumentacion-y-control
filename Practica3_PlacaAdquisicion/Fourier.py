@@ -11,20 +11,12 @@ import matplotlib.pyplot as plt
 from scipy import fftpack
 from scipy.signal import find_peaks    
 
-def NoisySin(f):
-    x = np.linspace(0, 4*np.pi/f, 5000)
-    y = [np.sin(2*np.pi*f*i) + random.random()*0.1 for i in x] 
-    return x, y
-
-def CommonSin(x, A, w, phi):
-    return A*np.sin(w*x + phi)
-
-def GetFrequency(V, t, Aguess = 1, wguess = 0.5, phiguess = 0):
-    params, params_cov = curve_fit(CommonSin, t, V, p0=[Aguess, wguess, phiguess])
-    print(params)
-    return params[1]
 
 def Frecuencias_FFT(x, y, debug = False):
+    """
+    Versión actualizada y debuggeada. Extrae la frecuencia de mayor
+    amplitud de una transformada de fourier de una señal y(x).
+    """
     yfft = fftpack.fft(y)
     N = len(x)
     T = x[-1]/N
@@ -34,9 +26,7 @@ def Frecuencias_FFT(x, y, debug = False):
     
     try:
         PosicionPicos, IntensidadPicos = find_peaks(yf, height=yf[0])
-        print('entro en try')
     except ValueError:
-        print('entro en except')
         yf = list(np.transpose(yf)[0])
         PosicionPicos, IntensidadPicos = find_peaks(yf, height=yf[0])
     
@@ -51,17 +41,13 @@ def Frecuencias_FFT(x, y, debug = False):
         print('El vector de las frecuencias de los picos es', VectorFrecuenciaPicos)
         print('Las intensidades de los picos son ', IntensidadPicos)
         print('La frecuencia del maximo es ', FrecuenciaDelMaximo)
-#    print('La frecuencia es', VectorFrecuenciaPicos)
-#    return VectorFrecuenciaPicos
+
     return xf, yf, FrecuenciaDelMaximo
 
 
 
 if __name__ == '__main__':
-#    Talter = np.transpose(Variables['reco'][0])[0]
-#    xf, yf, fmax = Frecuencias_FFT(list(T[0]), Talter)    
-#    plt.plot(xf, yf)
-#    plt.plot(list(T[0]), list(V[0]), 'o')
+
     Pantallas = Variables['reco']
     Tiempos = Variables['tiempos']
     xf, yf, fmax = Frecuencias_FFT(Tiempos[0], np.transpose(Pantallas[0])[0])

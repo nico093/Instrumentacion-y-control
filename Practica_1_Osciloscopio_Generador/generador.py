@@ -14,6 +14,10 @@ import numpy as np
 import time
 
 class GeneradorFunciones(object):
+    """
+    Este es el archivo que solemos usar para leer un generador
+    de funciones y suele andar bien
+    """
 
     def __init__(self, instrument = 0):
         self.rm = pyvisa.ResourceManager()
