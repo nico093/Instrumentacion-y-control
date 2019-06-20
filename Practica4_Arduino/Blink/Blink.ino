@@ -45,11 +45,14 @@ void loop() {
 //  Serial.println(i);
   Serial.println(val);
 
+
+// Si llega a una punta del scaneo, el step se invierte para que el scan vaya para el otro lado
   if (i >= 255){
     analogWrite(LED, 255);
     step = -1;
   }
-    
+  
+// Lo mismo pero con el otro extremo
   else if (i <= 0){
     
     step = 1;
